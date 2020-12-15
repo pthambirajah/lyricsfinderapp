@@ -1,13 +1,11 @@
 import React,{ useState,useEffect  } from 'react';
-import { StyleSheet, Text,TextInput, View, FlatList, Button, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text,TextInput, View, FlatList, Button,ScrollView } from 'react-native';
 import axios from 'axios';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 export default function ChartScreen() {
   const apiKey = "898d4bbcbae5002db9a10ce43f0bacbb";
-  const [songName, setSongName] = useState('');
-  const [charts, setCharts] = useState('');
+  const [countryCode, setCountryCode] = useState('');
+  const [charts, setCharts] = useState('FI');
   const [lyrics, setLyrics] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const BLUE = "#428AF8";
@@ -15,7 +13,7 @@ export default function ChartScreen() {
   useEffect(() => {
     let ignore = false;
     async function fetchData() {
-      const result = await axios(`https://api.musixmatch.com/ws/1.1/track.search?q_track=${songName}&page_size=3&s_track_rating=desc&apikey=${apiKey}`);
+      const result = await axios(`https://api.musixmatch.com/ws/1.1/chart.tracks.get?chart_name=top&page=1&page_size=3&country=${countryCode}&f_has_lyrics=1&apikey=${apiKey}`);
       if (!ignore) setCharts(result.data.message.body.track_list);
     }
     fetchData();
@@ -25,7 +23,7 @@ export default function ChartScreen() {
   const loadCharts = () => {
     let ignore = false;
     async function fetchData() {
-      const result = await axios(`https://api.musixmatch.com/ws/1.1/track.search?q_track=${songName}&page_size=3&s_track_rating=desc&apikey=${apiKey}`);
+      const result = await axios(`https://api.musixmatch.com/ws/1.1/chart.tracks.get?chart_name=top&page=1&page_size=3&country=${countryCode}&f_has_lyrics=1&apikey=${apiKey}`);
       if (!ignore) setCharts(result.data.message.body.track_list);
     }
     setIsLoading(false);
@@ -54,7 +52,14 @@ export default function ChartScreen() {
   return (
     <View style={styles.container}>
       <View style={{flex:3}}>
-        <Text style={styles.title}>Find the top songs of the moment</Text>
+        <Text style={styles.title}>Top songs in {countryCode}</Text>
+        <TextInput
+        style={styles.input}
+          selectionColor={BLUE}
+          placeholder="Type your country code here"
+          onChangeText={countryCode => setCountryCode(countryCode)}
+          defaultValue={countryCode}
+        />
         <Button title="Find" onPress={loadCharts}></Button>
       </View>
       <View style={styles.songs}>
@@ -67,6 +72,11 @@ export default function ChartScreen() {
           keyExtractor={(item) => item.track.track_id.toString()}
         />
         )}
+      </View>
+      <View style={styles.lyrics}>
+        <ScrollView>
+          <Text>{lyrics}</Text>
+        </ScrollView>
       </View>
     </View>
   );

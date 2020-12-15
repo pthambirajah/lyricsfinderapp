@@ -75,7 +75,6 @@ export default function HomeScreen() {
         )}
       </View>
       <View style={styles.lyrics}>
-      <Text>Something</Text>
         <ScrollView>
           <Text>{lyrics}</Text>
         </ScrollView>
