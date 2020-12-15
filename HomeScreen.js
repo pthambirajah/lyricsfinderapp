@@ -108,15 +108,15 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    marginTop: 45,
+    backgroundColor: '#FFF',
+    marginTop: 35,
     marginLeft: 10,
     marginRight: 10,
   },
   title: {
     fontWeight: 'bold',
     fontSize: 20,
-    alignContent: 'center',
+    textAlign: 'center',
     marginBottom: 5,
   },
   input: {
@@ -125,7 +125,8 @@ const styles = StyleSheet.create({
     width: "100%",
     borderColor: '#DDD',
     borderWidth: 1,
-    textAlign: "center"
+    textAlign: "center",
+    marginBottom: 5
   },
   songs: {
     flex:3
@@ -135,5 +136,11 @@ const styles = StyleSheet.create({
   },
   lyrics: {
     flex: 9,
+    padding: 32,
+    backgroundColor: "#FFF",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    backgroundColor: "lightblue"
+
   },
 });

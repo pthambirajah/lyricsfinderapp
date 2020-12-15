@@ -21,7 +21,6 @@ export default function ChartScreen() {
   }, [charts]);
 
   const loadCharts = () => {
-    
     async function fetchData() {
     const result = await axios(`https://api.musixmatch.com/ws/1.1/chart.tracks.get?chart_name=top&page=1&page_size=3&country=${countryCode}&f_has_lyrics=1&apikey=${apiKey}`);
     setCharts(result.data.message.body.track_list);
@@ -32,13 +31,11 @@ export default function ChartScreen() {
   }
 
   const getSongLyrics = (trackID) => {
-    let ignore = false;
     async function fetchLyrics() {
       const result = await axios(`https://api.musixmatch.com/ws/1.1/track.lyrics.get?track_id=${trackID}&apikey=${apiKey}`);
-      if (!ignore) setLyrics(result.data.message.body.lyrics.lyrics_body);
+      setLyrics(result.data.message.body.lyrics.lyrics_body);
     }
     fetchLyrics();
-    return () => { ignore = true;} 
     }
 
     const renderItem = ({ item }) => {  
@@ -73,11 +70,15 @@ export default function ChartScreen() {
         />
         )}
       </View>
+      {lyrics.trim() ? (
       <View style={styles.lyrics}>
         <ScrollView>
           <Text>{lyrics}</Text>
         </ScrollView>
       </View>
+      ) :(
+        <ActivityIndicator></ActivityIndicator>
+      )}
     </View>
   );
 };
@@ -112,5 +113,10 @@ const styles = StyleSheet.create({
   },
   lyrics: {
     flex: 9,
+    padding: 32,
+    backgroundColor: "#FFF",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    backgroundColor: "lightblue"
   },
 });
