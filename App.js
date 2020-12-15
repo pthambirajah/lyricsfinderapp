@@ -6,13 +6,12 @@ import axios from 'axios';
 
 export default function App() {
   const apiKey = "7842d138b8b694ff711de78ece62dfed";
-  const [chartSongs, setChartSongs] = useState('pu');
   const [songName, setSongName] = useState('');
   const [songDummy, setSongDummy] = useState('');
   const [lyrics, setLyrics] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [foundSongs, setFoundSongs] = useState('');
-  const [selectedSong, setSelectedSong] = useState(null);
+  const BLUE = "#428AF8";
 
   useEffect(() => {
     let ignore = false;
@@ -56,29 +55,30 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.container}>
-        <Text>Find lyrics of your favourite song</Text>
+      <View style={{flex:3}}>
+        <Text style={styles.title}>Find lyrics of your favourite song</Text>
         <TextInput
-          style={{height: 20}}
+        style={styles.input}
+          selectionColor={BLUE}
           placeholder="Type your favourite song name here"
           onChangeText={songName => setSongName(songName)}
           defaultValue={songName}
         />
         <Button title="Find" onPress={getSong}></Button>
-
+      </View>
+      <View style={styles.songs}>
         {isLoading ? (
           <Text>Nothing loaded</Text>
         ) : (
-        <FlatList
+        <FlatList 
           data={foundSongs}
           renderItem={renderItem}
           keyExtractor={(item) => item.track.track_id.toString()}
-          extraData={selectedSong}
         />
         )}
       </View>
-      <View style={styles.container}>
-        <ScrollView style={styles.container}>
+      <View style={styles.lyrics}>
+        <ScrollView>
           <Text>{lyrics}</Text>
         </ScrollView>
       </View>
@@ -88,14 +88,33 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 2,
+    flex: 1,
     backgroundColor: '#fff',
     marginTop: 45,
     marginLeft: 10,
     marginRight: 10,
   },
-  topalbums: {
-    flex: 1,
-    backgroundColor: '#fff',
+  title: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    alignContent: 'center',
+    marginBottom: 5,
+  },
+  input: {
+    height: 25,
+    fontSize: 16, 
+    width: "100%",
+    borderColor: '#DDD',
+    borderWidth: 1,
+    textAlign: "center"
+  },
+  songs: {
+    flex:3
+  },
+  button: {
+    flex: 1
+  },
+  lyrics: {
+    flex: 9,
   },
 });
