@@ -1,5 +1,5 @@
 import React,{ useState,useEffect  } from 'react';
-import { StyleSheet, Text,TextInput, View, FlatList, Button, TouchableOpacity, ScrollView } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text,TextInput, View, FlatList, Button, Share, ScrollView } from 'react-native';
 import axios from 'axios';
 
 export default function HomeScreen() {
@@ -12,13 +12,11 @@ export default function HomeScreen() {
   const BLUE = "#428AF8";
 
   useEffect(() => {
-    let ignore = false;
     async function fetchData() {
       const result = await axios(`https://api.musixmatch.com/ws/1.1/track.search?q_track=${songName}&page_size=3&s_track_rating=desc&apikey=${apiKey}`);
-      if (!ignore) setSongDummy(result.data.message.body.track_list);
+    setSongDummy(result.data.message.body.track_list);
     }
     fetchData();
-    return () => { ignore = true; }
   }, [songDummy]);
 
     const getSong = () => {
@@ -32,14 +30,31 @@ export default function HomeScreen() {
      
     }
   const getSongLyrics = (trackID) => {
-    let ignore = false;
+   
     async function fetchLyrics() {
       const result = await axios(`https://api.musixmatch.com/ws/1.1/track.lyrics.get?track_id=${trackID}&apikey=${apiKey}`);
-      if (!ignore) setLyrics(result.data.message.body.lyrics.lyrics_body);
+   setLyrics(result.data.message.body.lyrics.lyrics_body);
     }
     fetchLyrics();
-    return () => { ignore = true;} 
     }
+    const onShare = async () => {
+        try {
+          const result = await Share.share({
+            message: lyrics,
+          });
+          if (result.action === Share.sharedAction) {
+            if (result.activityType) {
+              // shared with activity type of result.activityType
+            } else {
+              // shared
+            }
+          } else if (result.action === Share.dismissedAction) {
+            // dismissed
+          }
+        } catch (error) {
+          alert(error.message);
+        }
+      };
 
     const renderItem = ({ item }) => {  
       return (
@@ -65,7 +80,7 @@ export default function HomeScreen() {
       </View>
       <View style={styles.songs}>
         {isLoading ? (
-          <Text>Nothing loaded</Text>
+          <ActivityIndicator />
         ) : (
         <FlatList 
           data={foundSongs}
@@ -74,11 +89,18 @@ export default function HomeScreen() {
         />
         )}
       </View>
-      <View style={styles.lyrics}>
-        <ScrollView>
-          <Text>{lyrics}</Text>
-        </ScrollView>
-      </View>
+      
+        {lyrics.trim() ? (
+        <View style={styles.lyrics}>
+            <ScrollView>
+            <Text>{lyrics}</Text>
+            </ScrollView>
+            <Button title="Share" onPress={onShare}></Button>
+        </View>
+        ) :(
+            <ActivityIndicator></ActivityIndicator>
+        )}
+      
     </View>
   );
 };

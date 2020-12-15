@@ -1,5 +1,5 @@
 import React,{ useState,useEffect  } from 'react';
-import { StyleSheet, Text,TextInput, View, FlatList, Button,ScrollView } from 'react-native';
+import { ActivityIndicator,StyleSheet, Text,TextInput, View, FlatList, Button,ScrollView } from 'react-native';
 import axios from 'axios';
 
 export default function ChartScreen() {
@@ -11,24 +11,24 @@ export default function ChartScreen() {
   const BLUE = "#428AF8";
 
   useEffect(() => {
-    let ignore = false;
+    
     async function fetchData() {
-      const result = await axios(`https://api.musixmatch.com/ws/1.1/chart.tracks.get?chart_name=top&page=1&page_size=3&country=${countryCode}&f_has_lyrics=1&apikey=${apiKey}`);
-      if (!ignore) setCharts(result.data.message.body.track_list);
+     const result = await axios(`https://api.musixmatch.com/ws/1.1/chart.tracks.get?chart_name=top&page=1&page_size=3&country=${countryCode}&f_has_lyrics=1&apikey=${apiKey}`);
+     setCharts(result.data.message.body.track_list);
     }
     fetchData();
-    return () => { ignore = true; }
+    
   }, [charts]);
 
   const loadCharts = () => {
-    let ignore = false;
+    
     async function fetchData() {
-      const result = await axios(`https://api.musixmatch.com/ws/1.1/chart.tracks.get?chart_name=top&page=1&page_size=3&country=${countryCode}&f_has_lyrics=1&apikey=${apiKey}`);
-      if (!ignore) setCharts(result.data.message.body.track_list);
+    const result = await axios(`https://api.musixmatch.com/ws/1.1/chart.tracks.get?chart_name=top&page=1&page_size=3&country=${countryCode}&f_has_lyrics=1&apikey=${apiKey}`);
+    setCharts(result.data.message.body.track_list);
     }
     setIsLoading(false);
     fetchData();
-    return () => { ignore = true; }
+    
   }
 
   const getSongLyrics = (trackID) => {
@@ -64,7 +64,7 @@ export default function ChartScreen() {
       </View>
       <View style={styles.songs}>
         {isLoading ? (
-          <Text>Please load</Text>
+          <ActivityIndicator />
         ) : (
         <FlatList 
           data={charts}
