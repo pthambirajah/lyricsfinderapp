@@ -9,8 +9,12 @@ export default function HomeScreen() {
   const [lyrics, setLyrics] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [foundSongs, setFoundSongs] = useState('');
-  const BLUE = "#428AF8";
+  const BLUE = "#428AF8"; //I wanted to reuse this blue but I use it only once
+  
 
+  //This is a workaround to one of my problem
+  //I have to fetch the data twice to make it appear
+  //So I load it as soon as the app is open for the first time, so the user doesnt see the bug.
   useEffect(() => {
     async function fetchData() {
       const result = await axios(`https://api.musixmatch.com/ws/1.1/track.search?q_track=${songName}&page_size=3&s_track_rating=desc&apikey=${apiKey}`);
@@ -19,6 +23,8 @@ export default function HomeScreen() {
     fetchData();
   }, [songDummy]);
 
+    //Here I simply get the 3 best rated songs that match the song name entered.
+    //In case there is multiple same song, the user could select the right one.
     const getSong = () => {
     fetch(`https://api.musixmatch.com/ws/1.1/track.search?q_track=${songName}&page_size=3&f_has_lyrics&s_track_rating=desc&apikey=${apiKey}`)
     .then(response=> response.json())
@@ -26,17 +32,20 @@ export default function HomeScreen() {
     .catch((error) => { 
       Alert.alert('Error', error);
      });
+     //Loading false allows me to display the buttons
      setIsLoading(false); 
-     
     }
-  const getSongLyrics = (trackID) => {
-   
-    async function fetchLyrics() {
+
+    //This function receive the track ID and get the lyrics of the song
+    const getSongLyrics = (trackID) => {
+      async function fetchLyrics() {
       const result = await axios(`https://api.musixmatch.com/ws/1.1/track.lyrics.get?track_id=${trackID}&apikey=${apiKey}`);
-   setLyrics(result.data.message.body.lyrics.lyrics_body);
+      setLyrics(result.data.message.body.lyrics.lyrics_body);
     }
     fetchLyrics();
     }
+
+    //This allows user to share the lyrics with someone using native sharing option.
     const onShare = async () => {
         try {
           const result = await Share.share({
@@ -56,6 +65,8 @@ export default function HomeScreen() {
         }
       };
 
+    //Here I render the button that display the song name and artist
+    //On press it will load the lyrics
     const renderItem = ({ item }) => {  
       return (
         <Button
@@ -71,7 +82,7 @@ export default function HomeScreen() {
         <Text style={styles.title}>Find lyrics of your favourite song</Text>
         <TextInput
         style={styles.input}
-          selectionColor={BLUE}
+          selectionColor={BLUE} 
           placeholder="Type your favourite song name here"
           onChangeText={songName => setSongName(songName)}
           defaultValue={songName}
@@ -79,7 +90,7 @@ export default function HomeScreen() {
         <Button title="Find" onPress={getSong}></Button>
       </View>
       <View style={styles.songs}>
-        {isLoading ? (
+        {isLoading ? ( //Display Flatlist only if it has been loaded
           <ActivityIndicator />
         ) : (
         <FlatList 
@@ -90,7 +101,7 @@ export default function HomeScreen() {
         )}
       </View>
       
-        {lyrics.trim() ? (
+        {lyrics.trim() ? ( //Display lyrics and share button only if not empty
         <View style={styles.lyrics}>
             <ScrollView>
             <Text>{lyrics}</Text>
@@ -141,6 +152,5 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     backgroundColor: "lightblue"
-
   },
 });

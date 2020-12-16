@@ -5,29 +5,27 @@ import axios from 'axios';
 export default function ChartScreen() {
   const apiKey = "898d4bbcbae5002db9a10ce43f0bacbb";
   const [countryCode, setCountryCode] = useState('');
-  const [charts, setCharts] = useState('FI');
+  const [charts, setCharts] = useState('FI'); 
   const [lyrics, setLyrics] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const BLUE = "#428AF8";
 
+  //Same workaround as on the homepage
   useEffect(() => {
-    
     async function fetchData() {
-     const result = await axios(`https://api.musixmatch.com/ws/1.1/chart.tracks.get?chart_name=top&page=1&page_size=3&country=${countryCode}&f_has_lyrics=1&apikey=${apiKey}`);
-     setCharts(result.data.message.body.track_list);
+      const result = await axios(`https://api.musixmatch.com/ws/1.1/chart.tracks.get?chart_name=top&page=1&page_size=3&country=${countryCode}&f_has_lyrics=1&apikey=${apiKey}`);
+      setCharts(result.data.message.body.track_list);
     }
     fetchData();
-    
-  }, [charts]);
+  },[charts]);
 
   const loadCharts = () => {
     async function fetchData() {
-    const result = await axios(`https://api.musixmatch.com/ws/1.1/chart.tracks.get?chart_name=top&page=1&page_size=3&country=${countryCode}&f_has_lyrics=1&apikey=${apiKey}`);
-    setCharts(result.data.message.body.track_list);
+      const result = await axios(`https://api.musixmatch.com/ws/1.1/chart.tracks.get?chart_name=top&page=1&page_size=3&country=${countryCode}&f_has_lyrics=1&apikey=${apiKey}`);
+      setCharts(result.data.message.body.track_list);
     }
     setIsLoading(false);
     fetchData();
-    
   }
 
   const getSongLyrics = (trackID) => {
@@ -38,14 +36,15 @@ export default function ChartScreen() {
     fetchLyrics();
     }
 
-    const renderItem = ({ item }) => {  
-      return (
-        <Button
-          title={item.track.track_name +" - "+ item.track.artist_name}
-          onPress={() => getSongLyrics(item.track.track_id)}
-        />
-      );
-    };
+  const renderItem = ({ item }) => {  
+    return (
+      <Button
+        title={item.track.track_name +" - "+ item.track.artist_name}
+        onPress={() => getSongLyrics(item.track.track_id)}
+      />
+    );
+  };
+
   return (
     <View style={styles.container}>
       <View style={{flex:3}}>

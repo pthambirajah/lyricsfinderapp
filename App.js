@@ -1,6 +1,4 @@
-import React,{ useState,useEffect  } from 'react';
-import { StyleSheet, Text,TextInput, View, FlatList, Button, TouchableOpacity, ScrollView } from 'react-native';
-import axios from 'axios';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from './HomeScreen';
@@ -11,28 +9,28 @@ const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
+    
     <NavigationContainer>
-      <Tab.Navigator
+      <Tab.Navigator //Bottom navigator
+      //Get current selected screen and make its icon outlined or not
       screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
-
             if (route.name === 'Home') {
-              iconName = focused
-                ? 'ios-search'
-                : 'ios-search-outline';
+              iconName = focused ? 'ios-search' : 'ios-search-outline';
             } else if (route.name === 'Charts') {
-              iconName = focused ? 'ios-trophy' : 'ios-trophy';
+              iconName = focused ? 'ios-trophy' : 'ios-trophy-outline';
             }
+            //Display icons with correct parameters
             return <Ionicons name={iconName} size={size} color={color} />;
           },
         })}
         tabBarOptions={{
-          activeTintColor: 'tomato',
+          activeTintColor: 'blue',
           inactiveTintColor: 'gray',
         }}
       >
-        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Home" component={HomeScreen} /> 
         <Tab.Screen name="Charts" component={ChartScreen} />
       </Tab.Navigator>
     </NavigationContainer>
